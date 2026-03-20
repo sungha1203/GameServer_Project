@@ -3,10 +3,7 @@
 #include "IocpCore.h"
 #include "Listener.h"
 #include "Session.h"
-
-extern vector<std::shared_ptr<Session>> sessions;
-extern std::atomic<int> g_connectedCnt;
-extern mutex g_sessionsLock;
+#include "SessionManager.h"
 
 class Server
 {
@@ -20,9 +17,10 @@ public:
 	void ShutDown(const char* msg);
 
 private:
-	std::unique_ptr<IocpCore>	iocpCore;
-	std::unique_ptr <Listener>	listener;
-	std::vector<thread>			workers;
+	std::unique_ptr<IocpCore>		iocpCore;
+	std::unique_ptr<Listener>		listener;
+	std::unique_ptr<SessionManager>	sessionManager;
+	std::vector<thread>				workers;
 
 	bool running = false;
 };

@@ -1,15 +1,15 @@
 #include "pch.h"
 #include <algorithm>
 #include <mutex>
+#include "SessionManager.h"
 #include "Session.h"
 #include "IocpObject.h"
 #include "IocpEvent.h"
 
 extern std::atomic<int> g_connectedCnt;
-extern vector<std::shared_ptr<Session>> sessions;
-extern mutex g_sessionsLock;
 
-Session::Session()
+Session::Session(SessionManager* sessionManager)
+	: sessionManager(sessionManager)
 {
 }
 
@@ -68,21 +68,8 @@ void Session::Disconnect()
 	closesocket(socket);
 	socket = INVALID_SOCKET;
 	
-	std::lock_guard<std::mutex> lock(g_sessionsLock);
-	sessions.erase(
-		std::remove_if(
-			sessions.begin(),
-			sessions.end(),
-			[this](const std::shared_ptr<Session>& s)
-			{
-				return s.get() == this;
-			}),
-		sessions.end()
-	);
-
-	int disconnected = --g_connectedCnt;
-	if (disconnected % 100 == 0)
-		cout << "Disconnected Cnt = " << disconnected << endl << endl;
+	if (sessionManager)
+		sessionManager->RemoveSession(shared_from_this());
 }
 
 HANDLE Session::GetHandle()

@@ -2,10 +2,12 @@
 #include "IocpObject.h"
 #include "IocpEvent.h"
 
-class Session : public IocpObject
+class SessionManager;
+
+class Session : public IocpObject , public std::enable_shared_from_this<Session>
 {
 public:
-	Session();
+	Session(SessionManager* sessionManager);
 	~Session();
 
 public:
@@ -25,6 +27,9 @@ public:
 
 private:
 	SOCKET			socket = INVALID_SOCKET;
+	SessionManager* sessionManager = nullptr;
+	
 	RecvEvent		recvEvent;
+
 };
 

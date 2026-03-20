@@ -4,13 +4,11 @@
 #include "IocpObject.h"
 #include "IocpCore.h"
 #include "IocpEvent.h"
+#include "SessionManager.h"
 #include "Session.h"
 
-extern vector<std::shared_ptr<Session>> sessions;
-extern std::atomic<int> g_connectedCnt;
-extern std::mutex g_sessionsLock;
-
-Listener::Listener(IocpCore* core) : iocpCore(core)
+Listener::Listener(IocpCore* core, SessionManager* sessionManager) 
+	: iocpCore(core), sessionManager(sessionManager)
 {
 }
 
@@ -71,7 +69,7 @@ void Listener::RegisterAccept()
 {
 	AcceptEvent* AE = new AcceptEvent();
 
-	std::shared_ptr<Session> session = std::make_shared<Session>();
+	std::shared_ptr<Session> session = std::make_shared<Session>(sessionManager);
 	session->CreateSocket();
 	AE->session = session;
 
@@ -101,12 +99,7 @@ void Listener::ProcessAccept(AcceptEvent* ae)
 		return;
 	}
 
-	std::lock_guard<std::mutex> lock(g_sessionsLock);
-	sessions.push_back(session);
-
-	int connected = ++g_connectedCnt;
-	if (g_connectedCnt % 10 == 0)
-		cout << "Connected Cnt = " << connected << endl;
+	sessionManager->AddSession(session);
 
 	// 접속된 클라이언트 소켓을 IOCP에 등록하여 이후 통신에서 IOCP 이벤트가 발생하도록 함
 	iocpCore->RegisterHandle(session.get());

@@ -6,11 +6,6 @@
 #include <atomic>
 #include <mutex>
 
-vector<std::shared_ptr<Session>> sessions;
-std::mutex g_sessionsLock;
-
-std::atomic<int> g_connectedCnt = 0;		// 현재 접속된 클라이언트 수
-
 Server::Server()
 {
 }
@@ -22,7 +17,8 @@ Server::~Server()
 void Server::Init()
 {
 	iocpCore = make_unique<IocpCore>();
-	listener = make_unique<Listener>(iocpCore.get());
+	sessionManager = make_unique<SessionManager>();
+	listener = make_unique<Listener>(iocpCore.get(), sessionManager.get());
 
 	listener->Init();
 }
@@ -62,7 +58,7 @@ void Server::End()
 
 void Server::ShutDown(const char* msg)
 {
-	for (auto& session : sessions)
+	for (auto& session : sessionManager->GetSessions())
 	{
 		if (session == nullptr)
 			continue;

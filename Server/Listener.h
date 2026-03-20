@@ -4,11 +4,12 @@
 class IocpCore;
 class AcceptEvent;
 class Session;
+class SessionManager;
 
 class Listener : public IocpObject
 {
 public:
-	Listener(IocpCore* core);
+	Listener(IocpCore* core, SessionManager* sessionManager);
 	~Listener();
 
 	void		Init();
@@ -24,6 +25,7 @@ public:
 private:
 	SOCKET				ListenSocket = INVALID_SOCKET;
 	IocpCore*			iocpCore = nullptr;
+	SessionManager*		sessionManager = nullptr;
 
 	LPFN_ACCEPTEX		AcceptEx = nullptr;
 };
