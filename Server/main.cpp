@@ -3,11 +3,8 @@
 
 int main()
 {
-	WSADATA wsaData;
-	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) return 0;
-
 	Server server;
-	server.Init();
+	if (!server.Init()) return 0;
 	server.Start();
 	
 	while (1)

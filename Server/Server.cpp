@@ -14,13 +14,26 @@ Server::~Server()
 {
 }
 
-void Server::Init()
+bool Server::Init()
 {
+	WSADATA wsaData;
+	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) return false;
+
+	if(ConfigLoader::Load("ServerConfig.ini", config) == false)
+	{
+		cout << "서버 설정 파일 로드 실패" << endl;
+		return false;
+	}
+
+	cout << "IP : " << config.ip << endl;
+	cout << "PORT : " << config.port << endl << endl;
+
 	iocpCore = make_unique<IocpCore>();
 	sessionManager = make_unique<SessionManager>();
 	listener = make_unique<Listener>(iocpCore.get(), sessionManager.get());
 
-	listener->Init();
+	listener->Init(config.ip, config.port);
+	return true;
 }
 
 void Server::Start()

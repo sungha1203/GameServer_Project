@@ -21,15 +21,16 @@ Listener::~Listener()
 	ListenSocket = INVALID_SOCKET;
 }
 
-void Listener::Init()
+void Listener::Init(const std::string& ip, int port)
 {
 	ListenSocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, WSA_FLAG_OVERLAPPED);
 	if (ListenSocket == INVALID_SOCKET) return;
 
 	sockaddr_in serverAddr{};
 	serverAddr.sin_family = AF_INET;
-	serverAddr.sin_port = htons(7777);
-	serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+	serverAddr.sin_port = htons(port);
+	::inet_pton(AF_INET, ip.c_str(), &serverAddr.sin_addr);
+	//serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 
 	if (bind(ListenSocket, (sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) return;
 	if (listen(ListenSocket, SOMAXCONN) == SOCKET_ERROR) return;

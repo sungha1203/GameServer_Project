@@ -12,7 +12,7 @@ public:
 	Listener(IocpCore* core, SessionManager* sessionManager);
 	~Listener();
 
-	void		Init();
+	void				Init(const std::string& ip, int port);
 
 public:
 	virtual HANDLE		GetHandle() override;
