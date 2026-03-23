@@ -6,8 +6,6 @@
 #include "IocpObject.h"
 #include "IocpEvent.h"
 
-extern std::atomic<int> g_connectedCnt;
-
 Session::Session(SessionManager* sessionManager)
 	: sessionManager(sessionManager)
 {
@@ -25,7 +23,8 @@ void Session::CreateSocket()
 void Session::RegisterRecv()
 {
 	// recvEvent 초기화
-	ZeroMemory(&recvEvent.overlapped, sizeof(OVERLAPPED));
+	ZeroMemory(&recvEvent.overlapped, sizeof(recvEvent.overlapped));
+	ZeroMemory(&recvEvent.buffer, sizeof(recvEvent.buffer));
 
 	WSABUF wsaBuf;
 	wsaBuf.buf = recvEvent.buffer;
@@ -55,8 +54,60 @@ void Session::ProcessRecv(int numOfBytes)
 		}
 	}
 
+	// 패킷 버퍼 오버플로우 방지
+	if(packetBufferSize + numOfBytes > sizeof(packetBuffer))
+	{
+		Disconnect();
+		return;
+	}
+
+	memcpy(packetBuffer + packetBufferSize, recvEvent.buffer, numOfBytes);
+	packetBufferSize += numOfBytes;
+
+	ProcessPacket();
+
 	// recv 재등록
 	RegisterRecv();
+}
+
+void Session::ProcessPacket()
+{
+	while (1)
+	{
+		if(packetBufferSize < sizeof(PacketHeader))
+			return;
+		
+		PacketHeader header;
+		memcpy(&header, packetBuffer, sizeof(PacketHeader));
+
+		if(header.size < sizeof(PacketHeader))
+		{
+			cout << "잘못된 패킷 크기" << endl;
+			Disconnect();
+			return;
+		}
+
+		if (packetBufferSize < header.size)
+			return;
+
+		switch (header.id)
+		{
+		case PKT_CHAT:
+		{
+			int dataSize = header.size - sizeof(PacketHeader);
+			string msg(packetBuffer + sizeof(PacketHeader), dataSize);
+
+			cout << "Recv Packet : " << msg << endl;
+			break;
+		}
+		default:
+			break;
+		}
+
+		int remainSize = packetBufferSize - header.size;
+		memmove(packetBuffer, packetBuffer + header.size, remainSize);
+		packetBufferSize = remainSize;
+	}
 }
 
 void Session::Disconnect()
@@ -79,8 +130,12 @@ HANDLE Session::GetHandle()
 
 void Session::Dispatch(IocpEvent* iocpEvent, int numOfBytes)
 {
-	if (iocpEvent->type == EventType::Recv)
+	switch (iocpEvent->type)
 	{
+	case EventType::Recv:
 		ProcessRecv(numOfBytes);
+		break;
+	default:
+		break;
 	}
 }
