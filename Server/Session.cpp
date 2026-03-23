@@ -39,6 +39,7 @@ void Session::RegisterRecv()
 		if (err != WSA_IO_PENDING)
 		{
 			cout << "WSARecv 실패 : " << err << endl;
+			PLOGW << "WSARecv 실패 : " << err << endl;
 		}
 	}
 }
@@ -83,6 +84,7 @@ void Session::ProcessPacket()
 		if(header.size < sizeof(PacketHeader))
 		{
 			cout << "잘못된 패킷 크기" << endl;
+			PLOGW << "잘못된 패킷 크기";
 			Disconnect();
 			return;
 		}
@@ -98,6 +100,7 @@ void Session::ProcessPacket()
 			string msg(packetBuffer + sizeof(PacketHeader), dataSize);
 
 			cout << "Recv Packet : " << msg << endl;
+			PLOGD << "Recv Packet : " << msg << endl;
 			break;
 		}
 		default:

@@ -8,4 +8,7 @@
 #include <thread>
 #include <vector>
 
+#include <plog/Log.h>
+#include <plog/Initializers/RollingFileInitializer.h>
+
 using namespace std;

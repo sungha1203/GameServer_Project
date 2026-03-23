@@ -22,11 +22,14 @@ bool Server::Init()
 	if(ConfigLoader::Load("ServerConfig.ini", config) == false)
 	{
 		cout << "서버 설정 파일 로드 실패" << endl;
+		PLOGI << "서버 설정 파일 로드 실패";
 		return false;
 	}
 
 	cout << "IP : " << config.ip << endl;
+	PLOGI << "IP : " << config.ip;
 	cout << "PORT : " << config.port << endl << endl;
+	PLOGI << "PORT : " << config.port;
 
 	iocpCore = make_unique<IocpCore>();
 	sessionManager = make_unique<SessionManager>();
