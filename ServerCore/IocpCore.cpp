@@ -29,7 +29,7 @@ bool IocpCore::Dispatch()
 	{
 		int err = ::WSAGetLastError();
 		if (err == ERROR_NETNAME_DELETED || err == ERROR_CONNECTION_ABORTED || err == ERROR_BROKEN_PIPE) {
-			PLOGW << "클라이언트 비정상 종료 감지.";
+			PLOGE << "클라이언트 비정상 종료 감지.";
 		}
 	}
 
