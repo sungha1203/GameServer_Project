@@ -158,6 +158,9 @@
       <Project>{a004658a-8c68-4892-b048-2f2993c3426a}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ServerConfig.ini" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

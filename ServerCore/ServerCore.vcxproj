@@ -160,9 +160,6 @@
     <ClInclude Include="Session.h" />
     <ClInclude Include="SessionManager.h" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\ServerConfig.ini" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
