@@ -10,5 +10,8 @@
 
 #include <plog/Log.h>
 #include <plog/Initializers/RollingFileInitializer.h>
+#include <plog/Appenders/ConsoleAppender.h>
+#include <plog/Appenders/ColorConsoleAppender.h>
+#include <plog/Appenders/RollingFileAppender.h>
 
 using namespace std;

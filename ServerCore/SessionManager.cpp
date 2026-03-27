@@ -18,7 +18,7 @@ void SessionManager::AddSession(std::shared_ptr<Session> session)
 	++sessionCnt;
 	if(sessionCnt % 10 == 0)
 	{
-		cout << "泅犁 立加 : " << sessionCnt.load() << endl;
+		PLOGI << "泅犁 立加 : " << sessionCnt.load();
 	}
 }
 
@@ -34,6 +34,6 @@ void SessionManager::RemoveSession(std::shared_ptr<Session> session)
 	}
 	if(sessionCnt % 10 == 1)
 	{
-		cout << "泅犁 立加 : " << sessionCnt.load() - 1 << endl;
+		PLOGI << "泅犁 立加 : " << sessionCnt.load() - 1;
 	}
 }

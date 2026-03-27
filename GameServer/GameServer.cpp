@@ -4,9 +4,12 @@
 int main()
 {
 	// 로그 파일 최대 1MB, 최대 5개까지 보관
-	plog::init(plog::debug, "ServerLog.txt", 1024 * 1024, 5);
-	//PLOGI << "Server Start";
-	cout << "Server Start" << endl;
+	static plog::ColorConsoleAppender<plog::TxtFormatter> consoleAppender;
+	static plog::RollingFileAppender<plog::TxtFormatter> fileAppender("ServerLog.txt", 1024 * 1024, 5);
+
+	plog::init(plog::debug, &fileAppender).addAppender(&consoleAppender);
+
+	PLOGI << "Server Start";
 
 	Server server;
 	if (!server.Init()) return 0;
