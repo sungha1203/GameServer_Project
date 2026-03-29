@@ -20,31 +20,38 @@ enum : uint16
 class Session : public IocpObject , public std::enable_shared_from_this<Session>
 {
 public:
-	Session(SessionManager* sessionManager);
-	~Session();
+	Session();
+	virtual ~Session();
 
 public:
-	void			CreateSocket();
+	void					SetSessionId(int id);
+	int						GetSessionId() { return sessionId; }
+	void					SetSessionManager(SessionManager* manager) { sessionManager = manager; }
 
 public:
-	SOCKET			GetSocket() { return socket; }
+	void					CreateSocket();
+	SOCKET					GetSocket() { return socket; }
 
-	void			RegisterRecv();
-	void			ProcessRecv(int numOfBytes);
-	void			ProcessPacket();
+	void					RegisterRecv();
+	void					ProcessRecv(int numOfBytes);
+	void					ProcessPacket();
 
-	void			Disconnect();
+	void					Disconnect();
+	void					Reset();
 
 public:
-	virtual HANDLE	GetHandle() override;
-	virtual void	Dispatch(class IocpEvent* iocpEvent, int numOfBytes = 0) override;
+	virtual HANDLE			GetHandle() override;
+	virtual void			Dispatch(class IocpEvent* iocpEvent, int numOfBytes = 0) override;
 
 private:
-	SOCKET			socket = INVALID_SOCKET;
-	SessionManager* sessionManager = nullptr;
-	
-	RecvEvent		recvEvent;
+	SOCKET					socket = INVALID_SOCKET;
 
-	char			packetBuffer[4096]{};
-	int				packetBufferSize = 0;	
+	int						sessionId = 0;
+	SessionManager*			sessionManager = nullptr;
+	std::atomic<bool>		isConnected{ false };
+	
+	RecvEvent				recvEvent;
+
+	char					packetBuffer[4096]{};
+	int						packetBufferSize = 0;	
 };

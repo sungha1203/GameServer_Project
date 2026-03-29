@@ -20,7 +20,7 @@ public:
 
 public:
 	void				RegisterAccept();					// 비동기 Accept 요청 등록
-	void				ProcessAccept(AcceptEvent* ae);	// 접속 완료된 클라이언트 처리
+	void				ProcessAccept(AcceptEvent* ae);		// 접속 완료된 클라이언트 처리
 
 private:
 	SOCKET				ListenSocket = INVALID_SOCKET;

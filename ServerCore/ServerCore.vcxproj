@@ -155,6 +155,7 @@
     <ClInclude Include="IocpEvent.h" />
     <ClInclude Include="IocpObject.h" />
     <ClInclude Include="Listener.h" />
+    <ClInclude Include="ObjectPool.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="Session.h" />

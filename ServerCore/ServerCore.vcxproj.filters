@@ -62,5 +62,8 @@
     <ClInclude Include="ConfigLoader.h">
       <Filter>Configuration</Filter>
     </ClInclude>
+    <ClInclude Include="ObjectPool.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

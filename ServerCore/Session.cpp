@@ -6,8 +6,7 @@
 #include "IocpObject.h"
 #include "IocpEvent.h"
 
-Session::Session(SessionManager* sessionManager)
-	: sessionManager(sessionManager)
+Session::Session()
 {
 }
 
@@ -15,9 +14,15 @@ Session::~Session()
 {
 }
 
+void Session::SetSessionId(int id)
+{
+	sessionId = id;
+}
+
 void Session::CreateSocket()
 {
 	socket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, WSA_FLAG_OVERLAPPED);
+	isConnected = true;
 }
 
 void Session::RegisterRecv()
@@ -55,7 +60,7 @@ void Session::ProcessRecv(int numOfBytes)
 	}
 
 	// 패킷 버퍼 오버플로우 방지
-	if(packetBufferSize + numOfBytes > sizeof(packetBuffer))
+	if (packetBufferSize + numOfBytes > sizeof(packetBuffer))
 	{
 		Disconnect();
 		return;
@@ -74,13 +79,10 @@ void Session::ProcessPacket()
 {
 	while (1)
 	{
-		if(packetBufferSize < sizeof(PacketHeader))
-			return;
-		
 		PacketHeader header;
 		memcpy(&header, packetBuffer, sizeof(PacketHeader));
 
-		if(header.size < sizeof(PacketHeader))
+		if (header.size < sizeof(PacketHeader))
 		{
 			PLOGE << "잘못된 패킷 크기";
 			Disconnect();
@@ -112,15 +114,32 @@ void Session::ProcessPacket()
 
 void Session::Disconnect()
 {
-	if (socket == INVALID_SOCKET)
+	if (isConnected.exchange(false) == false)
+		return;
+
+	if (socket != INVALID_SOCKET)
 	{
+		closesocket(socket);
+		socket = INVALID_SOCKET;
 		return;
 	}
-	closesocket(socket);
-	socket = INVALID_SOCKET;
-	
+
+	PLOGW << "Session Disconnected : " << sessionId;
+
 	if (sessionManager)
-		sessionManager->RemoveSession(shared_from_this());
+		sessionManager->ReleaseSession(shared_from_this());
+}
+
+void Session::Reset()
+{
+	socket = INVALID_SOCKET;
+	sessionId = 0;
+	isConnected = false;
+	packetBufferSize = 0;
+
+	ZeroMemory(&recvEvent.overlapped, sizeof(recvEvent.overlapped));
+	ZeroMemory(recvEvent.buffer, sizeof(recvEvent.buffer));
+	ZeroMemory(packetBuffer, sizeof(packetBuffer));
 }
 
 HANDLE Session::GetHandle()

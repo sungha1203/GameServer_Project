@@ -68,10 +68,11 @@ void Listener::Dispatch(IocpEvent* iocpEvent, int numOfBytes)
 
 void Listener::RegisterAccept()
 {
-	AcceptEvent* AE = new AcceptEvent();
-
-	std::shared_ptr<Session> session = std::make_shared<Session>(sessionManager);
+	auto session = sessionManager->AcquireSession();
+	//std::shared_ptr<Session> session = std::make_shared<Session>(sessionManager);
 	session->CreateSocket();
+
+	AcceptEvent* AE = new AcceptEvent();
 	AE->session = session;
 
 	DWORD recvBytes = 0;
@@ -90,8 +91,7 @@ void Listener::RegisterAccept()
 // client 접속 완료 처리
 void Listener::ProcessAccept(AcceptEvent* ae)
 {
-	std::shared_ptr<Session> session = ae->session;
-	SOCKET clientSocket = session->GetSocket();
+	SOCKET clientSocket = ae->session->GetSocket();
 
 	if (SOCKET_ERROR == setsockopt(clientSocket, SOL_SOCKET, SO_UPDATE_ACCEPT_CONTEXT, (char*)&ListenSocket, sizeof(ListenSocket)))
 	{
@@ -100,13 +100,15 @@ void Listener::ProcessAccept(AcceptEvent* ae)
 		return;
 	}
 
-	sessionManager->AddSession(session);
-
 	// 접속된 클라이언트 소켓을 IOCP에 등록하여 이후 통신에서 IOCP 이벤트가 발생하도록 함
-	iocpCore->RegisterHandle(session.get());
+	iocpCore->RegisterHandle(ae->session.get());
+
+	sessionManager->ActivateSession(ae->session);
+
+	PLOGI << "Client 연결 : Session ID = " << ae->session->GetSessionId();
 
 	// 클라이언트로부터 데이터를 받기 위한 비동기 recv 요청 등록
-	session->RegisterRecv();
+	ae->session->RegisterRecv();
 
 	// 다음 클라이언트 접속을 기다리는 Accept 요청 등록
 	RegisterAccept();

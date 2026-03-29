@@ -6,7 +6,9 @@
 #pragma comment(lib, "ws2_32.lib")
 
 #include <thread>
+#include <mutex>
 #include <vector>
+#include <unordered_map>
 
 #include <plog/Log.h>
 #include <plog/Initializers/RollingFileInitializer.h>

@@ -8,7 +8,6 @@ int main()
 	static plog::RollingFileAppender<plog::TxtFormatter> fileAppender("ServerLog.txt", 1024 * 1024, 5);
 
 	plog::init(plog::debug, &fileAppender).addAppender(&consoleAppender);
-	PLOGI << "Server Start";
 
 	Server server;
 	if (!server.Init()) return 0;
@@ -26,6 +25,5 @@ int main()
 		}
 	}
 
-	server.End();
 	WSACleanup();
 }

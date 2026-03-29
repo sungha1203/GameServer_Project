@@ -12,6 +12,7 @@ Server::Server()
 
 Server::~Server()
 {
+	End();
 }
 
 bool Server::Init()
@@ -29,10 +30,10 @@ bool Server::Init()
 	PLOGI << "PORT : " << config.port;
 
 	iocpCore = make_unique<IocpCore>();
-	sessionManager = make_unique<SessionManager>();
+	sessionManager = make_unique<SessionManager>(1000);
 	listener = make_unique<Listener>(iocpCore.get(), sessionManager.get());
-
 	listener->Init(config.ip, config.port);
+
 	return true;
 }
 
@@ -51,12 +52,19 @@ void Server::Start()
 			}
 			});
 	}
-
+	PLOGI << "서버 시작!";
 }
 
 void Server::End()
 {
 	running = false;
+
+	auto sessions = sessionManager->GetActiveSessionsCopy();
+	for (auto& session : sessions)
+	{
+		if(session)
+			session->Disconnect();
+	}
 
 	for(std::thread& worker : workers)
 	{
@@ -65,13 +73,14 @@ void Server::End()
 			worker.join();
 		}
 	}
+	workers.clear();
 
-	PLOGI << "서버 종료 완료";
+	PLOGI << "서버 종료!";
 }
 
 void Server::ShutDown(const char* msg)
 {
-	for (auto& session : sessionManager->GetSessions())
+	for (auto& session : sessionManager->GetActiveSessionsCopy())
 	{
 		if (session == nullptr)
 			continue;
