@@ -32,7 +32,7 @@ void SessionManager::ActivateSession(const SessionPtr& session)
 		activeSessions[sessionId] = session;
 	}
 
-	PLOGI << "현재 접속자 수 : " << GetActiveSessionCnt();
+	//PLOGI << "현재 접속자 수 : " << GetActiveSessionCnt();
 }
 
 void SessionManager::ReleaseSession(const SessionPtr& session)

@@ -105,7 +105,7 @@ void Listener::ProcessAccept(AcceptEvent* ae)
 
 	sessionManager->ActivateSession(ae->session);
 
-	PLOGI << "Client 연결 : Session ID = " << ae->session->GetSessionId();
+	//PLOGI << "Client 연결 : Session ID = " << ae->session->GetSessionId();
 
 	// 클라이언트로부터 데이터를 받기 위한 비동기 recv 요청 등록
 	ae->session->RegisterRecv();

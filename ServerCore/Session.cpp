@@ -6,6 +6,8 @@
 #include "IocpObject.h"
 #include "IocpEvent.h"
 
+std::atomic<long long> g_recvCnt = 0;
+
 Session::Session()
 {
 }
@@ -99,7 +101,8 @@ void Session::ProcessPacket()
 			int dataSize = header.size - sizeof(PacketHeader);
 			string msg(packetBuffer + sizeof(PacketHeader), dataSize);
 
-			PLOGD << "Recv Packet : " << msg << endl;
+			//PLOGD << "Recv Packet : " << msg << endl;
+			PLOGD << "받은 패킷 수 : " << ++g_recvCnt;
 			break;
 		}
 		default:
@@ -119,12 +122,12 @@ void Session::Disconnect()
 
 	if (socket != INVALID_SOCKET)
 	{
+		shutdown(socket, SD_BOTH);
 		closesocket(socket);
 		socket = INVALID_SOCKET;
-		return;
 	}
 
-	PLOGW << "Session Disconnected : " << sessionId;
+	//PLOGW << "Session Disconnected : " << sessionId;
 
 	if (sessionManager)
 		sessionManager->ReleaseSession(shared_from_this());
