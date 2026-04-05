@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GameServer.cpp" />
+    <ClCompile Include="GameSession.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ServerCore\ServerCore.vcxproj">
@@ -160,6 +161,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ServerConfig.ini" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GameSession.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

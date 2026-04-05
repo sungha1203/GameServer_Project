@@ -12,7 +12,6 @@ Server::Server()
 
 Server::~Server()
 {
-	End();
 }
 
 bool Server::Init()
@@ -29,6 +28,7 @@ bool Server::Init()
 	PLOGI << "IP : " << config.ip;
 	PLOGI << "PORT : " << config.port;
 
+	// 서버 종료시 삭제되어야 해서 unique_ptr로 관리, 포인터만 들고 있고 소유X
 	iocpCore = make_unique<IocpCore>();
 	sessionManager = make_unique<SessionManager>(1000);
 	listener = make_unique<Listener>(iocpCore.get(), sessionManager.get());

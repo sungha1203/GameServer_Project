@@ -6,8 +6,6 @@
 #include "IocpObject.h"
 #include "IocpEvent.h"
 
-std::atomic<long long> g_recvCnt = 0;
-
 Session::Session()
 {
 }
@@ -24,7 +22,7 @@ void Session::SetSessionId(int id)
 void Session::CreateSocket()
 {
 	socket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, WSA_FLAG_OVERLAPPED);
-	isConnected = true;
+	//isConnected = true;
 }
 
 void Session::RegisterRecv()
@@ -60,65 +58,11 @@ void Session::ProcessRecv(int numOfBytes)
 			return;
 		}
 	}
-
-	// 패킷 버퍼 오버플로우 방지
-	if (packetBufferSize + numOfBytes > sizeof(packetBuffer))
-	{
-		Disconnect();
-		return;
-	}
-
-	memcpy(packetBuffer + packetBufferSize, recvEvent.buffer, numOfBytes);
-	packetBufferSize += numOfBytes;
-
-	ProcessPacket();
-
-	// recv 재등록
-	RegisterRecv();
-}
-
-void Session::ProcessPacket()
-{
-	while (1)
-	{
-		PacketHeader header;
-		memcpy(&header, packetBuffer, sizeof(PacketHeader));
-
-		if (header.size < sizeof(PacketHeader))
-		{
-			PLOGE << "잘못된 패킷 크기";
-			Disconnect();
-			return;
-		}
-
-		if (packetBufferSize < header.size)
-			return;
-
-		switch (header.id)
-		{
-		case PKT_CHAT:
-		{
-			int dataSize = header.size - sizeof(PacketHeader);
-			string msg(packetBuffer + sizeof(PacketHeader), dataSize);
-
-			//PLOGD << "Recv Packet : " << msg << endl;
-			PLOGD << "받은 패킷 수 : " << ++g_recvCnt;
-			break;
-		}
-		default:
-			break;
-		}
-
-		int remainSize = packetBufferSize - header.size;
-		memmove(packetBuffer, packetBuffer + header.size, remainSize);
-		packetBufferSize = remainSize;
-	}
 }
 
 void Session::Disconnect()
 {
-	if (isConnected.exchange(false) == false)
-		return;
+	//if (isConnected.exchange(false) == false) return;
 
 	if (socket != INVALID_SOCKET)
 	{
@@ -137,12 +81,10 @@ void Session::Reset()
 {
 	socket = INVALID_SOCKET;
 	sessionId = 0;
-	isConnected = false;
-	packetBufferSize = 0;
+	//isConnected = false;
 
 	ZeroMemory(&recvEvent.overlapped, sizeof(recvEvent.overlapped));
 	ZeroMemory(recvEvent.buffer, sizeof(recvEvent.buffer));
-	ZeroMemory(packetBuffer, sizeof(packetBuffer));
 }
 
 HANDLE Session::GetHandle()

@@ -33,6 +33,9 @@
     <ClCompile Include="ConfigLoader.cpp">
       <Filter>Configuration</Filter>
     </ClCompile>
+    <ClCompile Include="PacketSession.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IocpCore.h">
@@ -64,6 +67,9 @@
     </ClInclude>
     <ClInclude Include="ObjectPool.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="PacketSession.h">
+      <Filter>Network</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

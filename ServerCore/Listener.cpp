@@ -47,10 +47,12 @@ void Listener::Init(const std::string& ip, int port)
 	iocpCore->RegisterHandle(this);
 
 	// 10°³ acceptµî·Ï
-	for (int i = 0; i < 10; ++i)
-	{
-		RegisterAccept();
-	}
+	//for (int i = 0; i < 10; ++i)
+	//{
+	//	RegisterAccept();
+	//}
+
+	RegisterAccept();
 }
 
 HANDLE Listener::GetHandle()
@@ -83,6 +85,11 @@ void Listener::RegisterAccept()
 		const int err = ::WSAGetLastError();
 		if (err != WSA_IO_PENDING)
 		{
+			if(session->GetSocket() != INVALID_SOCKET)
+				closesocket(session->GetSocket());
+
+			session->Reset();
+
 			delete AE;
 		}
 	}
