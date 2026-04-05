@@ -1,45 +1,39 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="소스 파일">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="Client">
+      <UniqueIdentifier>{a7b61227-38b5-42ed-ad65-f1e6035ed2bf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="리소스 파일">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="Main">
+      <UniqueIdentifier>{585c466f-c117-4303-9ca7-226b4a0ea853}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="client3.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="ClientMain.cpp">
+      <Filter>Main</Filter>
     </ClCompile>
     <ClCompile Include="Client.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>Client</Filter>
+    </ClCompile>
+    <ClCompile Include="client3.cpp">
+      <Filter>Client</Filter>
     </ClCompile>
     <ClCompile Include="ClientSession.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>Client</Filter>
     </ClCompile>
     <ClCompile Include="Connector.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>Client</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Client</Filter>
     </ClInclude>
     <ClInclude Include="ClientSession.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Client</Filter>
     </ClInclude>
     <ClInclude Include="Connector.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Client</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
