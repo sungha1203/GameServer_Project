@@ -11,15 +11,19 @@ int main()
 
 	Client client;
 	if(!client.Init()) return 0;
+	if (!client.ConnectClients()) return 0;
 	client.Start();
 
 	while (1)
 	{
-		auto clientSession = std::static_pointer_cast<ClientSession>(client.GetSession());
-		clientSession->SendChat("ㅎㅇ");
-		this_thread::sleep_for(chrono::seconds(1));
+		std::string cmd;
+		std::cin >> cmd;
+		if (cmd == "클라종료")
+		{
+			break;
+		}
 	}
-
 	client.End();
+
 	WSACleanup();
 }

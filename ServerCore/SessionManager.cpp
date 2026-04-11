@@ -3,7 +3,7 @@
 #include "Session.h"
 #include <mutex>
 
-SessionManager::SessionManager(SessionFactory factory)
+SessionManager::SessionManager(std::unique_ptr<SessionFactory> factory)
 	: sessionFactory(std::move(factory))
 {
 }
@@ -16,10 +16,8 @@ SessionPtr SessionManager::AcquireSession()
 {
 	if (!sessionFactory)
 		return nullptr;
-	SessionPtr session = sessionFactory();
-	session->SetSessionManager(this);
 
-	return session;
+	return sessionFactory->Acquire();
 }
 
 void SessionManager::ActivateSession(const SessionPtr& session)

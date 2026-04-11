@@ -24,6 +24,9 @@
     <ClCompile Include="Connector.cpp">
       <Filter>Network</Filter>
     </ClCompile>
+    <ClCompile Include="ClientSessionFactory.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -33,6 +36,9 @@
       <Filter>Network</Filter>
     </ClInclude>
     <ClInclude Include="Connector.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientSessionFactory.h">
       <Filter>Network</Filter>
     </ClInclude>
   </ItemGroup>

@@ -24,9 +24,6 @@
     <ClCompile Include="SessionManager.cpp">
       <Filter>Network</Filter>
     </ClCompile>
-    <ClCompile Include="ConfigLoader.cpp">
-      <Filter>Configuration</Filter>
-    </ClCompile>
     <ClCompile Include="PacketSession.cpp">
       <Filter>Network</Filter>
     </ClCompile>
@@ -57,6 +54,9 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="PacketSession.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="SessionFactory.h">
       <Filter>Network</Filter>
     </ClInclude>
   </ItemGroup>

@@ -18,7 +18,7 @@ bool Server::Init()
 	WSADATA wsaData;
 	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) return false;
 
-	if (ConfigLoader::Load("ServerConfig.ini", config) == false)
+	if (ConfigLoader<ConfigServer>::Load("ServerConfig.ini", config) == false)
 	{
 		PLOGE << "서버 설정 파일 로드 실패";
 		return false;
@@ -29,12 +29,7 @@ bool Server::Init()
 
 	// 서버 종료시 삭제되어야 해서 unique_ptr로 관리, 포인터만 들고 있고 소유X
 	iocpCore = make_unique<IocpCore>();
-	//sessionManager = make_unique<SessionManager>(1000);
-	sessionManager = make_unique<SessionManager>(
-		[]()->std::shared_ptr<Session>
-		{
-			return std::make_shared<GameSession>();
-		});
+	sessionManager = make_unique<SessionManager>(make_unique<GameSessionFactory>(1000));
 
 	listener = make_unique<Listener>(iocpCore.get(), sessionManager.get());
 	listener->Init(config.ip, config.port);

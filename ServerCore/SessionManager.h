@@ -2,16 +2,16 @@
 #include "pch.h"
 #include "Session.h"
 #include "ObjectPool.h"
+#include "SessionFactory.h"
 #include <mutex>
 #include <functional>
 
 using SessionPtr = std::shared_ptr<Session>;
-using SessionFactory = std::function<SessionPtr()>;
 
 class SessionManager
 {
 public:
-	SessionManager(SessionFactory factory);
+	SessionManager(std::unique_ptr<SessionFactory> factory);
 	~SessionManager();
 	
 	SessionPtr					AcquireSession();
@@ -22,10 +22,9 @@ public:
 	std::vector<SessionPtr>		GetActiveSessionsCopy();
 
 private:
-	std::mutex							sessionLock;
-	SessionFactory						sessionFactory;
-	//ObjectPool<Session>				sessionPool;
-	unordered_map<int, SessionPtr>		activeSessions;
-	atomic<int>							sessionIdCnt = 1;
+	std::mutex								sessionLock;
+	std::unique_ptr<SessionFactory>			sessionFactory;
+	std::unordered_map<int, SessionPtr>		activeSessions;
+	std::atomic<int>						sessionIdCnt = 1;
 };
 

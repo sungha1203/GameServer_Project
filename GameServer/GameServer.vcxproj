@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GameSessionFactory.cpp" />
     <ClCompile Include="Listener.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="ServerMain.cpp" />
@@ -166,6 +167,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameSession.h" />
+    <ClInclude Include="GameSessionFactory.h" />
     <ClInclude Include="Listener.h" />
     <ClInclude Include="Server.h" />
   </ItemGroup>

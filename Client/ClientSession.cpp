@@ -28,6 +28,8 @@ bool ClientSession::SendChat(const std::string& msg)
 	memcpy(sendBuffer.data(), &header, sizeof(PacketHeader));
 	memcpy(sendBuffer.data() + sizeof(PacketHeader), msg.data(), msg.size());
 
+	PLOGI << "ID : " << GetSessionId() << ", 보내는 메시지 : " << msg;
+
 	return Send(sendBuffer.data(), static_cast<int>(sendBuffer.size()));
 }
 

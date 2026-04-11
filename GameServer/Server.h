@@ -5,6 +5,7 @@
 #include "Session.h"
 #include "GameSession.h"
 #include "SessionManager.h"
+#include "GameSessionFactory.h"
 #include "ConfigLoader.h"
 
 class Server
@@ -19,7 +20,7 @@ public:
 	void							ShutDown(const char* msg);
 
 private:
-	Config							config;
+	ConfigServer					config;
 
 	std::unique_ptr<IocpCore>		iocpCore;
 	std::unique_ptr<Listener>		listener;

@@ -5,6 +5,7 @@
 #include "ClientSession.h"
 #include "ConfigLoader.h"
 #include "SessionManager.h"
+#include "ClientSessionFactory.h"
 
 class Client
 {
@@ -12,21 +13,22 @@ public:
 	Client();
 	~Client();
 
-	bool								Init();
-	void								Start();
-	void								End();
+	bool											Init();
+	bool											ConnectClients();
+	void											Start();
+	void											BroadcastChat();
+	void											End();
 
-public:
-	std::shared_ptr<Session>			GetSession() const { return clientSession; }
 
 private:
-	Config								config;
+	ConfigClient									config;
 
-	std::unique_ptr<IocpCore>			iocpCore;
-	std::unique_ptr<Connector>			connector;
-	std::unique_ptr<SessionManager>		sessionManager;
+	std::unique_ptr<IocpCore>						iocpCore;
+	std::unique_ptr<Connector>						connector;
+	std::unique_ptr<SessionManager>					sessionManager;
 
-	std::shared_ptr<Session>			clientSession;   // 일단 클라 하나만 생각해보자.
-	std::vector<thread>					workers;
-	std::atomic<bool>					running = false;
+	std::vector<std::shared_ptr<Session>>			clientSessions;		// 1000
+	std::vector<thread>								workers;
+	std::thread										sendThread;
+	std::atomic<bool>								running = false;
 };
