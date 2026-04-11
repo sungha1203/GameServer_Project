@@ -3,6 +3,7 @@
 #include "IocpCore.h"
 #include "Listener.h"
 #include "Session.h"
+#include "GameSession.h"
 #include "SessionManager.h"
 #include "ConfigLoader.h"
 
@@ -18,7 +19,7 @@ public:
 	void							ShutDown(const char* msg);
 
 private:
-	ServerConfig					config;
+	Config							config;
 
 	std::unique_ptr<IocpCore>		iocpCore;
 	std::unique_ptr<Listener>		listener;
@@ -27,4 +28,3 @@ private:
 
 	std::atomic<bool> running = false;
 };
-

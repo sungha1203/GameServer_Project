@@ -151,6 +151,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Listener.cpp" />
+    <ClCompile Include="Server.cpp" />
     <ClCompile Include="ServerMain.cpp" />
     <ClCompile Include="GameSession.cpp" />
   </ItemGroup>
@@ -164,6 +166,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameSession.h" />
+    <ClInclude Include="Listener.h" />
+    <ClInclude Include="Server.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

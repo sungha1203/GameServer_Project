@@ -9,6 +9,7 @@
 #include <thread>
 #include <mutex>
 #include <vector>
+#include <queue>
 #include <unordered_map>
 
 #include <plog/Log.h>

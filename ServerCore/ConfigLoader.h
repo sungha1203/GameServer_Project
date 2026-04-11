@@ -1,14 +1,14 @@
 #pragma once
 
-struct ServerConfig
+struct Config
 {
 	std::string ip;
-	int port = 7777;
+	int port;
 };
 
 class ConfigLoader
 {
 public:
-	static bool Load(const std::string& filePath, ServerConfig& config);
+	static bool Load(const std::string& filePath, Config& config);
 };
 

@@ -63,6 +63,9 @@ void PacketSession::ProcessPacket()
 		if (packetBufferSize < header.size)
 			return;
 
+		int dataSize = header.size - sizeof(PacketHeader);
+		OnRecvPacket(header, packetBuffer + sizeof(PacketHeader), dataSize);
+
 		int remainSize = packetBufferSize - header.size;
 		memmove(packetBuffer, packetBuffer + header.size, remainSize);
 		packetBufferSize = remainSize;

@@ -21,29 +21,39 @@ public:
 	virtual ~Session();
 
 public:
-	void					SetSessionId(int id);
-	int						GetSessionId() { return sessionId; }
-	void					SetSessionManager(SessionManager* manager) { sessionManager = manager; }
+	void							SetSessionId(int id);
+	int								GetSessionId() { return sessionId; }
+	void							SetSessionManager(SessionManager* manager) { sessionManager = manager; }
 
 public:
-	void					CreateSocket();
-	SOCKET					GetSocket() { return socket; }
+	void							CreateSocket();
+	SOCKET							GetSocket() { return socket; }
 
-	void					RegisterRecv();
-	virtual void			ProcessRecv(int numOfBytes);
+	void							RegisterRecv();
+	virtual void					ProcessRecv(int numOfBytes);
 
-	void					Disconnect();
-	virtual void			Reset();
+	bool							Send(const char* buffer, int len);
+	void							RegisterSend();
+	void							ProcessSend(SendEvent* sendEvent, int numOfBytes);
+
+
+	void							Disconnect();
+	virtual void					Reset();
 
 public:
-	virtual HANDLE			GetHandle() override;
-	virtual void			Dispatch(class IocpEvent* iocpEvent, int numOfBytes = 0) override;
+	virtual HANDLE					GetHandle() override;
+	virtual void					Dispatch(class IocpEvent* iocpEvent, int numOfBytes = 0) override;
 
 protected:
-	SOCKET					socket = INVALID_SOCKET;
+	SOCKET							socket = INVALID_SOCKET;
 
-	int						sessionId = 0;
-	SessionManager*			sessionManager = nullptr;
+	int								sessionId = 0;
+	SessionManager*					sessionManager = nullptr;
+	std::atomic<bool>				isConnected{ false };		// 소켓이 준비 됐음.
 	
-	RecvEvent				recvEvent;
+	RecvEvent						recvEvent;
+	
+	std::queue<std::vector<char>>	sendQueue;
+	std::mutex						sendMutex;
+	std::atomic<bool>				isSending{ false };
 };

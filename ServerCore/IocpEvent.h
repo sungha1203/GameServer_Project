@@ -41,3 +41,12 @@ public:
 public:
 	char buffer[1024]{};
 };
+
+class SendEvent : public IocpEvent
+{
+public:
+	SendEvent() : IocpEvent(EventType::Send) {}
+
+public:
+	std::vector<char> sendbuffer;
+};

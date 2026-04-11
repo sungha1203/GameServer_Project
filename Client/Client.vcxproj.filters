@@ -1,11 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Client">
-      <UniqueIdentifier>{a7b61227-38b5-42ed-ad65-f1e6035ed2bf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Main">
       <UniqueIdentifier>{585c466f-c117-4303-9ca7-226b4a0ea853}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{0b4493f2-820b-45fb-af0c-93bfc2b84d67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{a7b61227-38b5-42ed-ad65-f1e6035ed2bf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -13,27 +16,29 @@
       <Filter>Main</Filter>
     </ClCompile>
     <ClCompile Include="Client.cpp">
-      <Filter>Client</Filter>
-    </ClCompile>
-    <ClCompile Include="client3.cpp">
-      <Filter>Client</Filter>
+      <Filter>Network</Filter>
     </ClCompile>
     <ClCompile Include="ClientSession.cpp">
-      <Filter>Client</Filter>
+      <Filter>Network</Filter>
     </ClCompile>
     <ClCompile Include="Connector.cpp">
-      <Filter>Client</Filter>
+      <Filter>Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
-      <Filter>Client</Filter>
+      <Filter>Network</Filter>
     </ClInclude>
     <ClInclude Include="ClientSession.h">
-      <Filter>Client</Filter>
+      <Filter>Network</Filter>
     </ClInclude>
     <ClInclude Include="Connector.h">
-      <Filter>Client</Filter>
+      <Filter>Network</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClientConfig.ini">
+      <Filter>리소스 파일</Filter>
+    </None>
   </ItemGroup>
 </Project>

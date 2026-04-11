@@ -5,19 +5,25 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Server">
-      <UniqueIdentifier>{098eac35-8264-4101-869f-cb92e9a790c9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Main">
       <UniqueIdentifier>{bea6a556-952f-4f1b-8e48-0b611289c4d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{098eac35-8264-4101-869f-cb92e9a790c9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameSession.cpp">
-      <Filter>Server</Filter>
+      <Filter>Network</Filter>
     </ClCompile>
     <ClCompile Include="ServerMain.cpp">
       <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Server.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Listener.cpp">
+      <Filter>Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -27,7 +33,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameSession.h">
-      <Filter>Server</Filter>
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Server.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Listener.h">
+      <Filter>Network</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

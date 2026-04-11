@@ -3,13 +3,15 @@
 #include "Session.h"
 #include "ObjectPool.h"
 #include <mutex>
+#include <functional>
 
 using SessionPtr = std::shared_ptr<Session>;
+using SessionFactory = std::function<SessionPtr()>;
 
 class SessionManager
 {
 public:
-	SessionManager(int initCnt);
+	SessionManager(SessionFactory factory);
 	~SessionManager();
 	
 	SessionPtr					AcquireSession();
@@ -19,17 +21,11 @@ public:
 	int							GetActiveSessionCnt();
 	std::vector<SessionPtr>		GetActiveSessionsCopy();
 
-	//void			AddSession(std::shared_ptr<Session> session);
-	//void			RemoveSession(std::shared_ptr<Session> session);
-	//const std::vector<std::shared_ptr<Session>>& GetSessions() const { return sessions; }
-
 private:
 	std::mutex							sessionLock;
-	ObjectPool<Session>					sessionPool;
+	SessionFactory						sessionFactory;
+	//ObjectPool<Session>				sessionPool;
 	unordered_map<int, SessionPtr>		activeSessions;
 	atomic<int>							sessionIdCnt = 1;
-
-	//std::vector<std::shared_ptr<Session>> sessions;
-	//std::atomic<int> sessionCnt{};
 };
 

@@ -3,7 +3,7 @@
 #include <fstream>
 #include <string>
 
-bool ConfigLoader::Load(const std::string& filePath, ServerConfig& config)
+bool ConfigLoader::Load(const std::string& filePath, Config& config)
 {
 	std::ifstream file(filePath);
 	if (!file.is_open())

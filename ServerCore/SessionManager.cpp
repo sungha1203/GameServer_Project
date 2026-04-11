@@ -3,8 +3,8 @@
 #include "Session.h"
 #include <mutex>
 
-SessionManager::SessionManager(int initCnt)
-	: sessionPool(initCnt)
+SessionManager::SessionManager(SessionFactory factory)
+	: sessionFactory(std::move(factory))
 {
 }
 
@@ -14,7 +14,9 @@ SessionManager::~SessionManager()
 
 SessionPtr SessionManager::AcquireSession()
 {
-	SessionPtr session = sessionPool.Acquire();
+	if (!sessionFactory)
+		return nullptr;
+	SessionPtr session = sessionFactory();
 	session->SetSessionManager(this);
 
 	return session;

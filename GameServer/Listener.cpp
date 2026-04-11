@@ -7,7 +7,7 @@
 #include "SessionManager.h"
 #include "Session.h"
 
-Listener::Listener(IocpCore* core, SessionManager* sessionManager) 
+Listener::Listener(IocpCore* core, SessionManager* sessionManager)
 	: iocpCore(core), sessionManager(sessionManager)
 {
 }
@@ -32,8 +32,8 @@ void Listener::Init(const std::string& ip, int port)
 	::inet_pton(AF_INET, ip.c_str(), &serverAddr.sin_addr);
 	//serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 
-	if (bind(ListenSocket, (sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) return;
-	if (listen(ListenSocket, SOMAXCONN) == SOCKET_ERROR) return;
+	if (::bind(ListenSocket, reinterpret_cast<sockaddr*>(&serverAddr), sizeof(serverAddr)) == SOCKET_ERROR) return;
+	if (::listen(ListenSocket, SOMAXCONN) == SOCKET_ERROR) return;
 
 	// AcceptEx 함수 포인터 로딩
 	GUID guidAcceptEx = WSAID_ACCEPTEX;
@@ -46,11 +46,11 @@ void Listener::Init(const std::string& ip, int port)
 	// listen socket IOCP에 등록
 	iocpCore->RegisterHandle(this);
 
-	// 10개 accept등록
-	//for (int i = 0; i < 10; ++i)
-	//{
-	//	RegisterAccept();
-	//}
+	//10개 accept등록
+	for (int i = 0; i < 10; ++i)
+	{
+		RegisterAccept();
+	}
 
 	RegisterAccept();
 }
@@ -71,7 +71,6 @@ void Listener::Dispatch(IocpEvent* iocpEvent, int numOfBytes)
 void Listener::RegisterAccept()
 {
 	auto session = sessionManager->AcquireSession();
-	//std::shared_ptr<Session> session = std::make_shared<Session>(sessionManager);
 	session->CreateSocket();
 
 	AcceptEvent* AE = new AcceptEvent();
@@ -85,7 +84,7 @@ void Listener::RegisterAccept()
 		const int err = ::WSAGetLastError();
 		if (err != WSA_IO_PENDING)
 		{
-			if(session->GetSocket() != INVALID_SOCKET)
+			if (session->GetSocket() != INVALID_SOCKET)
 				closesocket(session->GetSocket());
 
 			session->Reset();
@@ -112,7 +111,7 @@ void Listener::ProcessAccept(AcceptEvent* ae)
 
 	sessionManager->ActivateSession(ae->session);
 
-	//PLOGI << "Client 연결 : Session ID = " << ae->session->GetSessionId();
+	PLOGI << "Client 연결 : Session ID = " << ae->session->GetSessionId();
 
 	// 클라이언트로부터 데이터를 받기 위한 비동기 recv 요청 등록
 	ae->session->RegisterRecv();
