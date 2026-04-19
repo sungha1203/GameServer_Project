@@ -28,9 +28,14 @@ bool ClientSession::SendChat(const std::string& msg)
 	memcpy(sendBuffer.data(), &header, sizeof(PacketHeader));
 	memcpy(sendBuffer.data() + sizeof(PacketHeader), msg.data(), msg.size());
 
-	PLOGI << "ID : " << GetSessionId() << ", 보낸 메시지 : " << msg;
+	//PLOGD << "ID : " << GetSessionId() << ", 보낸 메시지 : " << msg;
 
 	return Send(sendBuffer.data(), static_cast<int>(sendBuffer.size()));
+}
+
+void ClientSession::Reset()
+{
+	PacketSession::Reset();
 }
 
 void ClientSession::OnRecvPacket(PacketHeader header, const char* buffer, int len)

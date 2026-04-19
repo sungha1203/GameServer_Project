@@ -12,8 +12,9 @@ struct ConfigServer
 struct ConfigClient
 {
 	std::string ip;
-	int port;
-	int clientCnt;
+	int port = 0;
+	int sessionCntPerThread = 0;
+	int connectThreadCnt = 0;
 };
 
 template<typename T>
@@ -52,20 +53,11 @@ public:
 					config.ip = value;
 				else if (key == "PORT")
 					config.port = std::stoi(value);
-				else if (key == "CLIENT")
-					config.clientCnt = std::stoi(value);
+				else if (key == "SESSIONCNTPERTHREAD")
+					config.sessionCntPerThread = std::stoi(value);
+				else if (key == "CONNECTTHREADCNT")
+					config.connectThreadCnt = std::stoi(value);
 			}
-		}
-
-		if constexpr (std::is_same_v<T, ConfigServer>)
-		{
-			if (config.ip.empty() || config.port == 0)
-				return false;
-		}
-		else if constexpr (std::is_same_v<T, ConfigClient>)
-		{
-			if (config.ip.empty() || config.port == 0 || config.clientCnt == 0)
-				return false;
 		}
 
 		return true;

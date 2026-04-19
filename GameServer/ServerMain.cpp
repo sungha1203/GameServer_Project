@@ -27,10 +27,6 @@ int main()
 
 	server.End();
 
-	// 현재 접속자 수		-> SessionManager::ActivateSession(L35)
-	// 받은 메시지			-> Session::ProcessPacket(L104)
-	// recv 개수			-> Session::ProcessPacket(L105)
-	// 접속자 끊기			-> Session::Disconnect(L127)
-
-	WSACleanup();
+	// 받은 메시지			-> GameSession::OnRecvPacket(L21)
+	// recv 개수			-> GameSession::OnRecvPacket(L25)
 }

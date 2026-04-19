@@ -5,6 +5,8 @@
 #include <atomic>
 #include <mutex>
 
+std::atomic<int> recvCnt = 0;
+
 Server::Server()
 {
 }
@@ -75,7 +77,8 @@ void Server::End()
 	}
 	workers.clear();
 
-	PLOGI << "서버 종료!";
+	//PLOGI << "서버 종료!";
+	WSACleanup();
 }
 
 void Server::ShutDown(const char* msg)

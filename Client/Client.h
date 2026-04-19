@@ -15,8 +15,10 @@ public:
 
 	bool											Init();
 	bool											ConnectClients();
+	void											ConnectThread(int threadidx, int sessionCntPerThread);
 	void											Start();
 	void											BroadcastChat();
+	bool											ReconnectSession(std::shared_ptr<ClientSession> session);
 	void											End();
 
 
@@ -28,7 +30,14 @@ private:
 	std::unique_ptr<SessionManager>					sessionManager;
 
 	std::vector<std::shared_ptr<Session>>			clientSessions;		// 1000
+
+private:
 	std::vector<thread>								workers;
+	std::vector<std::thread>						connectThreads;
 	std::thread										sendThread;
 	std::atomic<bool>								running = false;
+	std::mutex										sessionLock;
+
+private:
+	std::atomic<int>								sendCnt = 0;		// 보낸 메시지 수
 };

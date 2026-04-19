@@ -12,7 +12,7 @@ public:
 	Connector(IocpCore* iocpCore);
 	~Connector();
 
-	bool Connect(std::shared_ptr<Session> session, const char* ip, int port);
+	bool Connect(std::shared_ptr<Session> session, const std::string& ip, int port);
 
 private:
 	IocpCore* iocpCore = nullptr;

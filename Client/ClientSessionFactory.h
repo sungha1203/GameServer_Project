@@ -7,7 +7,7 @@
 class ClientSessionFactory : public SessionFactory
 {
 public:
-	ClientSessionFactory(int initCnt = 1000);
+	ClientSessionFactory(int initCnt);
 
 public:
 	virtual SessionPtr	Acquire() override;

@@ -169,6 +169,12 @@ void Session::Reset()
 
 	ZeroMemory(&recvEvent.overlapped, sizeof(recvEvent.overlapped));
 	ZeroMemory(recvEvent.buffer, sizeof(recvEvent.buffer));
+
+	{
+		std::lock_guard<std::mutex> lock(sendMutex);
+		while (!sendQueue.empty())
+			sendQueue.pop();
+	}
 }
 
 HANDLE Session::GetHandle()

@@ -44,6 +44,8 @@ public:
 	virtual HANDLE					GetHandle() override;
 	virtual void					Dispatch(class IocpEvent* iocpEvent, int numOfBytes = 0) override;
 
+	bool 							IsConnected() { return isConnected.load(); }
+
 protected:
 	SOCKET							socket = INVALID_SOCKET;
 

@@ -16,7 +16,7 @@ SessionPtr SessionManager::AcquireSession()
 {
 	if (!sessionFactory)
 		return nullptr;
-
+	// 직접 세션을 만들지 않음. 팩토리에 위임.
 	return sessionFactory->Acquire();
 }
 

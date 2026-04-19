@@ -46,12 +46,6 @@ void Listener::Init(const std::string& ip, int port)
 	// listen socket IOCP에 등록
 	iocpCore->RegisterHandle(this);
 
-	//10개 accept등록
-	for (int i = 0; i < 10; ++i)
-	{
-		RegisterAccept();
-	}
-
 	RegisterAccept();
 }
 

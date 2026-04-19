@@ -18,11 +18,12 @@ public:
 	void OnDisconnected();
 
 	bool SendChat(const std::string& msg);
+	virtual void Reset() override;
 
 protected:
 	virtual void OnRecvPacket(PacketHeader header, const char* buffer, int len) override;
 
 private:
-	//ClientSessionManager* clientSessionManager = nullptr;
+	//SessionManager* clientSessionManager = nullptr;
 };
 

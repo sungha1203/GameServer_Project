@@ -18,12 +18,14 @@ int main()
 	{
 		std::string cmd;
 		std::cin >> cmd;
+
 		if (cmd == "클라종료")
 		{
 			break;
 		}
 	}
 	client.End();
-
-	WSACleanup();
+	// 보낸 메시지			-> ClientSession::SendChat(L31)
+	// send 개수			-> Client::BroadcastChat(L123)
+	// 재연결 시도			-> Client::BroadcastChat(L117)
 }
