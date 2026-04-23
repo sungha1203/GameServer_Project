@@ -19,7 +19,7 @@ void GameSession::OnRecvPacket(PacketHeader header, const char* buffer, int len)
 
 		++recvCnt;					// 전체 받은 메시지 수
 		++recvPacketCnt;			// 10번 받으면 종료
-		//PLOGD << "ID : " << GetSessionId() << ", 받은 메시지 : " << msg;
+		PLOGD << "ID : " << GetSessionId() << ", 받은 메시지 : " << msg;
 
 		if (recvCnt % 1000 == 0)
 			PLOGE << "받은 메시지 수 : " << recvCnt;

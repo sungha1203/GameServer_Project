@@ -30,6 +30,8 @@ void PacketSession::ProcessRecv(int numOfBytes)
 
 	ProcessPacket();
 
+	if (!IsConnected())	return;
+
 	// recv 재등록
 	RegisterRecv();
 }
@@ -65,6 +67,9 @@ void PacketSession::ProcessPacket()
 
 		int dataSize = header.size - sizeof(PacketHeader);
 		OnRecvPacket(header, packetBuffer + sizeof(PacketHeader), dataSize);
+
+		// OnRecvPacket에서 Disconnect()가 호출됐을 수 있으므로 연결 상태 확인
+		if (!isConnected)	return;
 
 		int remainSize = packetBufferSize - header.size;
 		memmove(packetBuffer, packetBuffer + header.size, remainSize);

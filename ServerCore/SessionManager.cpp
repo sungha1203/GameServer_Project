@@ -17,7 +17,12 @@ SessionPtr SessionManager::AcquireSession()
 	if (!sessionFactory)
 		return nullptr;
 	// 직접 세션을 만들지 않음. 팩토리에 위임.
-	return sessionFactory->Acquire();
+
+	SessionPtr session = sessionFactory->Acquire();
+	if(session)
+		session->SetSessionManager(this);
+
+	return session;
 }
 
 void SessionManager::ActivateSession(const SessionPtr& session)

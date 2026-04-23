@@ -166,6 +166,7 @@ void Session::Reset()
 	socket = INVALID_SOCKET;
 	sessionId = 0;
 	isConnected = false;
+	sessionManager = nullptr;
 
 	ZeroMemory(&recvEvent.overlapped, sizeof(recvEvent.overlapped));
 	ZeroMemory(recvEvent.buffer, sizeof(recvEvent.buffer));
