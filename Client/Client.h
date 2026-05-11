@@ -40,4 +40,6 @@ private:
 
 private:
 	std::atomic<int>								sendCnt = 0;		// 보낸 메시지 수
+
+	bool											ReconnectOne();
 };

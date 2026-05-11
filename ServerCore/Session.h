@@ -58,4 +58,7 @@ protected:
 	std::queue<std::vector<char>>	sendQueue;
 	std::mutex						sendMutex;
 	std::atomic<bool>				isSending{ false };
+
+	//std::atomic<int>				recvPendingCnt{ 0 };		// recv가 몇 개 등록되어 있는지 카운트
+	//std::atomic<bool>				disconnecting{ false };		// Disconnect()가 호출됐는지 여부
 };

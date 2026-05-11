@@ -10,7 +10,7 @@ int main()
 	plog::init(plog::debug, &fileAppender).addAppender(&consoleAppender);
 
 	Client client;
-	if(!client.Init()) return 0;
+	if (!client.Init()) return 0;
 	if (!client.ConnectClients()) return 0;
 	client.Start();
 

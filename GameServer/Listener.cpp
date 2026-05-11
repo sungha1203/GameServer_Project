@@ -14,11 +14,6 @@ Listener::Listener(IocpCore* core, SessionManager* sessionManager)
 
 Listener::~Listener()
 {
-	if (INVALID_SOCKET != ListenSocket)
-	{
-		closesocket(ListenSocket);
-	}
-	ListenSocket = INVALID_SOCKET;
 }
 
 void Listener::Init(const std::string& ip, int port)
@@ -47,6 +42,14 @@ void Listener::Init(const std::string& ip, int port)
 	iocpCore->RegisterHandle(this);
 
 	RegisterAccept();
+}
+
+void Listener::Close()
+{
+	if (ListenSocket == INVALID_SOCKET) return;
+
+	closesocket(ListenSocket);
+	ListenSocket = INVALID_SOCKET;
 }
 
 HANDLE Listener::GetHandle()

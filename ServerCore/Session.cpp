@@ -27,9 +27,15 @@ void Session::CreateSocket()
 
 void Session::RegisterRecv()
 {
+	if (!IsConnected()) return;
+
 	// recvEvent 초기화
 	ZeroMemory(&recvEvent.overlapped, sizeof(recvEvent.overlapped));
 	ZeroMemory(&recvEvent.buffer, sizeof(recvEvent.buffer));
+
+	if(!recvEvent.owner)		// 중복 생성 방지
+		recvEvent.owner = shared_from_this(); //해결중
+	//++recvPendingCnt;
 
 	WSABUF wsaBuf;
 	wsaBuf.buf = recvEvent.buffer;
@@ -43,7 +49,11 @@ void Session::RegisterRecv()
 		int err = WSAGetLastError();
 		if (err != WSA_IO_PENDING)
 		{
+			//--recvPendingCnt;
+			recvEvent.owner.reset();
+			Disconnect();
 			PLOGE << "WSARecv 실패 : " << err << endl;
+			return;
 		}
 	}
 }
@@ -66,7 +76,7 @@ bool Session::Send(const char* buffer, int len)
 	// 접속X 세션은 가셈
 	if (isConnected == false)	return false;
 	// 보낼 데이터가 없거나 길이가 0이하도 가셈
-	if(buffer == nullptr || len <= 0)	return false;
+	if (buffer == nullptr || len <= 0)	return false;
 
 	std::vector<char> sendData(buffer, buffer + len);
 
@@ -90,7 +100,7 @@ void Session::RegisterSend()
 	{
 		std::lock_guard<std::mutex> lock(sendMutex);
 
-		if(sendQueue.empty())
+		if (sendQueue.empty())
 		{
 			isSending = false;
 			return;
@@ -101,6 +111,7 @@ void Session::RegisterSend()
 	}
 
 	SendEvent* sendEvent = new SendEvent();
+	sendEvent->owner = shared_from_this(); //해결중
 	sendEvent->sendbuffer = std::move(sendData);
 
 	WSABUF wsaBuf;
@@ -111,7 +122,7 @@ void Session::RegisterSend()
 
 	int ret = WSASend(socket, &wsaBuf, 1, &sendBytes, 0, &sendEvent->overlapped, nullptr);
 
-	if(ret == SOCKET_ERROR)
+	if (ret == SOCKET_ERROR)
 	{
 		int err = WSAGetLastError();
 		if (err != WSA_IO_PENDING)
@@ -146,14 +157,20 @@ void Session::ProcessSend(SendEvent* sendEvent, int numOfBytes)
 
 void Session::Disconnect()
 {
-	if (isConnected.exchange(false) == false) return;
+	bool connected = isConnected.exchange(false);
 
-	if (socket != INVALID_SOCKET)
+	if (connected == true) 
 	{
-		shutdown(socket, SD_BOTH);
-		closesocket(socket);
-		socket = INVALID_SOCKET;
+		if (socket != INVALID_SOCKET)
+		{
+			shutdown(socket, SD_BOTH);
+			closesocket(socket);
+			socket = INVALID_SOCKET;
+		}
 	}
+
+	//if(recvPendingCnt.load() == 0)
+	recvEvent.owner.reset(); //해결중
 
 	//PLOGW << "Session Disconnected : " << sessionId;
 
@@ -163,10 +180,17 @@ void Session::Disconnect()
 
 void Session::Reset()
 {
+	//if (recvPendingCnt.load() != 0)
+		//PLOGE << " recvPendingCnt : " << recvPendingCnt.load();
+
+	recvEvent.owner.reset(); //해결중
+
 	socket = INVALID_SOCKET;
 	sessionId = 0;
 	isConnected = false;
 	sessionManager = nullptr;
+	//disconnecting = false;
+	//recvPendingCnt = 0;
 
 	ZeroMemory(&recvEvent.overlapped, sizeof(recvEvent.overlapped));
 	ZeroMemory(recvEvent.buffer, sizeof(recvEvent.buffer));
@@ -185,6 +209,8 @@ HANDLE Session::GetHandle()
 
 void Session::Dispatch(IocpEvent* iocpEvent, int numOfBytes)
 {
+	if (iocpEvent == nullptr) return;
+
 	switch (iocpEvent->type)
 	{
 	case EventType::Recv:

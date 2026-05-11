@@ -24,6 +24,7 @@ protected:
 	virtual void OnRecvPacket(PacketHeader header, const char* buffer, int len) override;
 
 private:
+	int               seqNum = 1;
 	//SessionManager* clientSessionManager = nullptr;
 };
 

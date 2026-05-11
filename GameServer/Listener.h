@@ -13,6 +13,7 @@ public:
 	~Listener();
 
 	void				Init(const std::string& ip, int port);
+	void				Close();
 
 public:
 	virtual HANDLE		GetHandle() override;

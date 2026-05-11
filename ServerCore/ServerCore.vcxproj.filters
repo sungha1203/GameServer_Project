@@ -27,6 +27,12 @@
     <ClCompile Include="PacketSession.cpp">
       <Filter>Network</Filter>
     </ClCompile>
+    <ClCompile Include="PacketProcessor.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="CoreGlobal.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IocpCore.h">
@@ -58,6 +64,12 @@
     </ClInclude>
     <ClInclude Include="SessionFactory.h">
       <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="PacketProcessor.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreGlobal.h">
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

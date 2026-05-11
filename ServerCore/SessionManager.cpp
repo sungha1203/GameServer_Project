@@ -36,7 +36,7 @@ void SessionManager::ActivateSession(const SessionPtr& session)
 		std::lock_guard<std::mutex> lock(sessionLock);
 		activeSessions[sessionId] = session;
 	}
-
+	//PLOGD << "ActivateSession id = " << session->GetSessionId() << ", active =  " << activeSessions.size();
 	//PLOGI << "현재 접속자 수 : " << GetActiveSessionCnt();
 }
 
@@ -48,6 +48,7 @@ void SessionManager::ReleaseSession(const SessionPtr& session)
 		std::lock_guard<std::mutex> lock(sessionLock);
 		activeSessions.erase(session->GetSessionId());
 	}
+	//PLOGE << "ReleaseSession id = " << session->GetSessionId() << ", active =  " << activeSessions.size();
 }
 
 int SessionManager::GetActiveSessionCnt()
@@ -70,30 +71,3 @@ std::vector<SessionPtr> SessionManager::GetActiveSessionsCopy()
 
 	return sessions;
 }
-
-//void SessionManager::AddSession(std::shared_ptr<Session> session)
-//{
-//	std::lock_guard<std::mutex> lock(sessionLock);
-//	sessions.push_back(session);
-//	++sessionCnt;
-//	if(sessionCnt % 10 == 0)
-//	{
-//		PLOGI << "현재 접속 : " << sessionCnt.load();
-//	}
-//}
-
-//void SessionManager::RemoveSession(std::shared_ptr<Session> session)
-//{
-//	std::lock_guard<std::mutex> lock(sessionLock);
-//	
-//	auto it = std::find(sessions.begin(), sessions.end(), session);
-//	if(it != sessions.end())
-//	{
-//		sessions.erase(it);
-//		--sessionCnt;
-//	}
-//	if(sessionCnt % 10 == 1)
-//	{
-//		PLOGI << "현재 접속 : " << sessionCnt.load() - 1;
-//	}
-//}

@@ -17,7 +17,6 @@ public:
 	bool							Init();
 	void							Start();
 	void							End();
-	void							ShutDown(const char* msg);
 
 private:
 	ConfigServer					config;

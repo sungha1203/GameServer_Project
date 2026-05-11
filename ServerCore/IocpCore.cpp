@@ -25,6 +25,13 @@ bool IocpCore::Dispatch()
 
 	bool ret = GetQueuedCompletionStatus(h_iocp, &numOfBytes, &key, &overlapped, 100);//INFINITE);
 
+	if (overlapped == nullptr) return false;
+
+	IocpObject* iocpObject = reinterpret_cast<IocpObject*>(key);
+	IocpEvent* iocpEvent = reinterpret_cast<IocpEvent*>(overlapped);
+
+	if (iocpObject == nullptr) return false;
+
 	if (FALSE == ret)
 	{
 		int err = ::WSAGetLastError();
@@ -32,12 +39,6 @@ bool IocpCore::Dispatch()
 			PLOGE << "클라이언트 비정상 종료 감지.";
 		}
 	}
-
-	IocpObject* iocpObject = reinterpret_cast<IocpObject*>(key);
-	IocpEvent* iocpEvent = reinterpret_cast<IocpEvent*>(overlapped);
-
-	if (overlapped == nullptr || iocpObject == nullptr)
-		return false;
 
 	iocpObject->Dispatch(iocpEvent, numOfBytes);
 	return true;

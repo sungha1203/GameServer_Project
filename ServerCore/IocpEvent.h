@@ -18,6 +18,8 @@ public:
 public:
 	OVERLAPPED overlapped{};
 	EventType type;
+
+	std::shared_ptr<Session> owner; // «ÿ∞·¡ﬂ
 };
 
 class AcceptEvent : public IocpEvent

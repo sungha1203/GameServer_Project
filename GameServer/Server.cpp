@@ -2,6 +2,7 @@
 #include "Server.h"
 #include "IocpCore.h"
 #include "Listener.h"
+#include "PacketProcessor.h"
 #include <atomic>
 #include <mutex>
 
@@ -36,6 +37,9 @@ bool Server::Init()
 	listener = make_unique<Listener>(iocpCore.get(), sessionManager.get());
 	listener->Init(config.ip, config.port);
 
+	packetProcessor = make_unique<PacketProcessor>();					 // new
+	packetProcessor->Start(8);											 // new
+
 	return true;
 }
 
@@ -59,39 +63,45 @@ void Server::Start()
 
 void Server::End()
 {
-	running = false;
+	if (running.exchange(false) == false) return;
 
-	auto sessions = sessionManager->GetActiveSessionsCopy();
-	for (auto& session : sessions)
+	if (listener)
 	{
-		if (session)
-			session->Disconnect();
+		listener->Close();
 	}
+
+	if (sessionManager)
+	{
+		auto sessions = sessionManager->GetActiveSessionsCopy();
+		for (auto& session : sessions)
+		{
+			if (session)
+				session->Disconnect();
+		}
+		sessions.clear();
+	}
+
+	//PLOGE << "[End Check] active=" << sessionManager->GetActiveSessionCnt() << ", packetQ=" << packetProcessor->packetQueue.size();
+
+	std::this_thread::sleep_for(std::chrono::milliseconds(300));
 
 	for (std::thread& worker : workers)
 	{
 		if (worker.joinable())
-		{
 			worker.join();
-		}
 	}
 	workers.clear();
 
-	//PLOGI << "서버 종료!";
-	WSACleanup();
-}
-
-void Server::ShutDown(const char* msg)
-{
-	for (auto& session : sessionManager->GetActiveSessionsCopy())
+	if (packetProcessor)
 	{
-		if (session == nullptr)
-			continue;
-
-		SOCKET s = session->GetSocket();
-		if (s == INVALID_SOCKET)
-			continue;
-
-		int ret = send(s, msg, static_cast<int>(strlen(msg)), 0);
+		packetProcessor->Stop();
+		packetProcessor.reset();
 	}
+
+	sessionManager.reset();
+	listener.reset();
+	iocpCore.reset();
+
+
+	WSACleanup();
 }

@@ -22,7 +22,7 @@ void GameSession::OnRecvPacket(PacketHeader header, const char* buffer, int len)
 		PLOGD << "ID : " << GetSessionId() << ", 받은 메시지 : " << msg;
 
 		if (recvCnt % 1000 == 0)
-			PLOGE << "받은 메시지 수 : " << recvCnt;
+			PLOGI << "받은 메시지 수 : " << recvCnt;
 		if (recvPacketCnt >= 10)
 		{
 			Disconnect();

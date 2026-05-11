@@ -20,15 +20,18 @@ void ClientSession::OnDisconnected()
 
 bool ClientSession::SendChat(const std::string& msg)
 {
+	string NewMsg = msg + std::to_string(seqNum);
 	PacketHeader header;
-	header.size = static_cast<uint16>(sizeof(PacketHeader) + msg.size());
+	header.size = static_cast<uint16>(sizeof(PacketHeader) + NewMsg.size());
 	header.id = PKT_CHAT;
 
 	std::vector<char> sendBuffer(header.size);
 	memcpy(sendBuffer.data(), &header, sizeof(PacketHeader));
-	memcpy(sendBuffer.data() + sizeof(PacketHeader), msg.data(), msg.size());
+	memcpy(sendBuffer.data() + sizeof(PacketHeader), NewMsg.data(), NewMsg.size());
 
-	PLOGD << "ID : " << GetSessionId() << ", 보낸 메시지 : " << msg;
+	++seqNum;
+
+	PLOGD << "ID : " << GetSessionId() << ", 보낸 메시지 : " << NewMsg;
 
 	return Send(sendBuffer.data(), static_cast<int>(sendBuffer.size()));
 }
@@ -36,6 +39,7 @@ bool ClientSession::SendChat(const std::string& msg)
 void ClientSession::Reset()
 {
 	PacketSession::Reset();
+	seqNum = 1;
 }
 
 void ClientSession::OnRecvPacket(PacketHeader header, const char* buffer, int len)

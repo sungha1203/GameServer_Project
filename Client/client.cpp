@@ -39,12 +39,6 @@ bool Client::ConnectClients()
 		connectThreads.emplace_back(&Client::ConnectThread, this, i, config.sessionCntPerThread);
 	}
 
-	for (auto& th : connectThreads)
-	{
-		if (th.joinable())
-			th.join();
-	}
-
 	return true;
 }
 
@@ -100,7 +94,7 @@ void Client::Start()
 			while (running)
 			{
 				BroadcastChat();
-				std::this_thread::sleep_for(std::chrono::seconds(1));
+				//std::this_thread::sleep_for(std::chrono::seconds(1));
 			}
 		});
 
@@ -109,16 +103,22 @@ void Client::Start()
 
 void Client::BroadcastChat()
 {
-	for (auto& session : clientSessions)
+	std::vector<std::shared_ptr<Session>> sessionsCopy;
+	{
+		std::lock_guard<std::mutex> lock(sessionLock);
+		sessionsCopy = clientSessions;
+	}
+
+	for (auto& session : sessionsCopy)
 	{
 		// 클라세션에 있는 기능을 사용하려고 다운 캐스팅을 함.
 		auto clientSession = std::static_pointer_cast<ClientSession>(session);
 
 		if (clientSession->IsConnected() == false)
 		{
-			if(ReconnectSession(clientSession))
+			if (ReconnectSession(clientSession))
 				PLOGI << "세션 재연결 성공 : " << clientSession->GetSessionId();
-			 else
+			else
 				PLOGE << "세션 재연결 실패 : " << clientSession->GetSessionId();
 
 			continue;
@@ -127,15 +127,45 @@ void Client::BroadcastChat()
 		if (clientSession)
 		{
 			for (int i = 0; i < 10; ++i) {
-				clientSession->SendChat("ㅎㅇ");
+				clientSession->SendChat("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit.");
 				++sendCnt;
-				if(sendCnt % 1000 == 0)
+				if (sendCnt % 1000 == 0)
 					PLOGE << "보낸 메시지 수 : " << sendCnt;
 			}
 		}
 		//std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
 }
+
+//void Client::BroadcastChat()
+//{
+//	std::lock_guard<std::mutex> lock(sessionLock);
+//
+//	for (auto it = clientSessions.begin(); it != clientSessions.end(); )
+//	{
+//		auto session = *it;
+//
+//		if (!session || !session->IsConnected() || session->GetSessionId() == 0)
+//		{
+//			it = clientSessions.erase(it);
+//			ReconnectOne();
+//			continue;
+//		}
+//
+//		auto clientSession = std::static_pointer_cast<ClientSession>(session);
+//
+//		for (int i = 0; i < 10; ++i)
+//		{
+//			if (!clientSession->IsConnected())
+//				break;
+//
+//			clientSession->SendChat("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit.");
+//			++sendCnt;
+//		}
+//
+//		++it;
+//	}
+//}
 
 bool Client::ReconnectSession(std::shared_ptr<ClientSession> session)
 {
@@ -159,13 +189,19 @@ void Client::End()
 	if (sendThread.joinable())
 		sendThread.join();
 
-	if(sendThread.joinable())
+	if (sendThread.joinable())
 		sendThread.join();
 
 	for (auto& session : clientSessions)
 	{
 		if (session)
 			session->Disconnect();
+	}
+
+	for (auto& th : connectThreads)
+	{
+		if (th.joinable())
+			th.join();
 	}
 
 	for (auto& worker : workers)
@@ -180,4 +216,20 @@ void Client::End()
 
 	// PLOGI << "클라이언트 종료!";
 	WSACleanup();
+}
+
+bool Client::ReconnectOne()
+{
+	auto newSession = sessionManager->AcquireSession();
+	newSession->SetSessionManager(sessionManager.get());
+
+	if (!connector->Connect(newSession, config.ip, config.port))
+	{
+		PLOGE << "세션 재연결 실패";
+		return false;
+	}
+
+	sessionManager->ActivateSession(newSession);
+	clientSessions.push_back(newSession);
+	return true;
 }
