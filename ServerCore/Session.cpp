@@ -27,7 +27,7 @@ void Session::CreateSocket()
 
 void Session::RegisterRecv()
 {
-	if (!IsConnected()) return;
+	if (!IsConnected() || disconnecting) return;
 
 	// recvEvent 초기화
 	ZeroMemory(&recvEvent.overlapped, sizeof(recvEvent.overlapped));
@@ -35,7 +35,7 @@ void Session::RegisterRecv()
 
 	if(!recvEvent.owner)		// 중복 생성 방지
 		recvEvent.owner = shared_from_this(); //해결중
-	//++recvPendingCnt;
+	recvPendingCnt.fetch_add(1);
 
 	WSABUF wsaBuf;
 	wsaBuf.buf = recvEvent.buffer;
@@ -49,9 +49,11 @@ void Session::RegisterRecv()
 		int err = WSAGetLastError();
 		if (err != WSA_IO_PENDING)
 		{
-			//--recvPendingCnt;
+			recvPendingCnt.fetch_sub(1);
 			recvEvent.owner.reset();
+
 			Disconnect();
+			TryRelease();
 			PLOGE << "WSARecv 실패 : " << err << endl;
 			return;
 		}
@@ -155,11 +157,24 @@ void Session::ProcessSend(SendEvent* sendEvent, int numOfBytes)
 	RegisterSend();
 }
 
+void Session::TryRelease()
+{
+	if (!disconnecting || released) return;
+
+	if (recvPendingCnt.load() != 0) return;
+
+	recvEvent.owner.reset();
+
+	if(sessionManager)
+		sessionManager->ReleaseSession(shared_from_this());
+}
+
 void Session::Disconnect()
 {
 	bool connected = isConnected.exchange(false);
+	disconnecting = true;
 
-	if (connected == true) 
+	if (connected) 
 	{
 		if (socket != INVALID_SOCKET)
 		{
@@ -169,28 +184,31 @@ void Session::Disconnect()
 		}
 	}
 
+	TryRelease();
 	//if(recvPendingCnt.load() == 0)
-	recvEvent.owner.reset(); //해결중
+	//recvEvent.owner.reset();
 
 	//PLOGW << "Session Disconnected : " << sessionId;
 
-	if (sessionManager)
-		sessionManager->ReleaseSession(shared_from_this());
+	//if (sessionManager)
+	//	sessionManager->ReleaseSession(shared_from_this());
 }
 
 void Session::Reset()
 {
-	//if (recvPendingCnt.load() != 0)
-		//PLOGE << " recvPendingCnt : " << recvPendingCnt.load();
+	if (recvPendingCnt.load() != 0)
+		PLOGE << " recvPendingCnt : " << recvPendingCnt.load();
 
-	recvEvent.owner.reset(); //해결중
+	recvEvent.owner.reset();
 
 	socket = INVALID_SOCKET;
 	sessionId = 0;
 	isConnected = false;
 	sessionManager = nullptr;
-	//disconnecting = false;
-	//recvPendingCnt = 0;
+
+	disconnecting = false;
+	released = false;
+	recvPendingCnt = 0;
 
 	ZeroMemory(&recvEvent.overlapped, sizeof(recvEvent.overlapped));
 	ZeroMemory(recvEvent.buffer, sizeof(recvEvent.buffer));

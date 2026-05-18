@@ -12,20 +12,27 @@ PacketSession::~PacketSession()
 void PacketSession::ProcessRecv(int numOfBytes)
 {
 	auto owner = std::move(recvEvent.owner);
+	recvPendingCnt.fetch_sub(1);
 
-	if (!owner) return;
+	if (!owner)
+	{
+		TryRelease();
+		return;
+	}
 
 	if (numOfBytes == 0)
 	{
 		if (socket != INVALID_SOCKET)
 		{
 			Disconnect();
+			TryRelease();
 			return;
 		}
 	}
 	if (packetBufferSize + numOfBytes > sizeof(packetBuffer))
 	{
 		Disconnect();
+		TryRelease();
 		return;
 	}
 
@@ -45,7 +52,11 @@ void PacketSession::ProcessRecv(int numOfBytes)
 		}
 	}
 
-	if (!IsConnected())	return;
+	if (!IsConnected() || disconnecting)
+	{
+		TryRelease();
+		return;
+	}
 
 	// recv Àçµî·Ï
 	RegisterRecv();

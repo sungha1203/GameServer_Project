@@ -24,7 +24,8 @@ int main()
 		string cmd;
 		cin >> cmd;
 
-		if (cmd == "서버종료")	break;
+		if (cmd == "서버종료")
+			break;
 	}
 
 	server.End();

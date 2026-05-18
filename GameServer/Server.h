@@ -26,5 +26,6 @@ private:
 	std::unique_ptr<SessionManager>	sessionManager;
 	std::vector<thread>				workers;
 
-	std::atomic<bool> running = false;
+	std::atomic<bool>				running = false;
+	std::atomic<bool>				accepting = false;	
 };

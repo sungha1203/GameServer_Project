@@ -36,7 +36,7 @@ public:
 	void							RegisterSend();
 	void							ProcessSend(SendEvent* sendEvent, int numOfBytes);
 
-
+	void							TryRelease();
 	void							Disconnect();
 	virtual void					Reset();
 
@@ -59,6 +59,7 @@ protected:
 	std::mutex						sendMutex;
 	std::atomic<bool>				isSending{ false };
 
-	//std::atomic<int>				recvPendingCnt{ 0 };		// recv가 몇 개 등록되어 있는지 카운트
-	//std::atomic<bool>				disconnecting{ false };		// Disconnect()가 호출됐는지 여부
+	std::atomic<int>				recvPendingCnt{ 0 };		// recv가 몇 개 등록되어 있는지 카운트
+	std::atomic<bool>				disconnecting{ false };		// Disconnect()가 호출됐는지 여부
+	std::atomic<bool>				released{ false };			// 세션이 SessionManager에서 해제됐는지 여부
 };

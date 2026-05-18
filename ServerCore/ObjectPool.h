@@ -21,14 +21,13 @@ public:
 	{
 		std::lock_guard<std::mutex> lock(mtx);
 
-		PLOGD << "[ObjectPool::~ObjectPool] created=" << createdCnt
+		PLOGE << "[ObjectPool::~ObjectPool] created=" << createdCnt
 			<< ", acquired=" << acquiredCnt
 			<< ", released=" << releasedCnt
-			<< ", pool=" << pool.size();  //new2
+			<< ", pool=" << pool.size();
 
 		for(T* obj : pool)
 		{
-			// PLOGI << "[ObjectPool delete] obj = " << obj;  //new2
 			delete obj;
 		}
 		pool.clear();

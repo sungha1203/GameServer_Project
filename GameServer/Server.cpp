@@ -46,6 +46,7 @@ bool Server::Init()
 void Server::Start()
 {
 	running = true;
+	accepting = true;
 
 	const int num_core = thread::hardware_concurrency();
 	for (int i = 0; i < num_core; ++i)
@@ -63,7 +64,7 @@ void Server::Start()
 
 void Server::End()
 {
-	if (running.exchange(false) == false) return;
+	if (accepting.exchange(false) == false) return;
 
 	if (listener)
 	{
@@ -81,9 +82,21 @@ void Server::End()
 		sessions.clear();
 	}
 
-	//PLOGE << "[End Check] active=" << sessionManager->GetActiveSessionCnt() << ", packetQ=" << packetProcessor->packetQueue.size();
+	// ICOP 스레드가 세션에서 패킷 처리 중일 수 있으니 세션이 모두 종료될 때까지 대기
+	while (1)
+	{
+		if(sessionManager->GetActiveSessionCnt() == 0)
+			break;
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	}
 
-	std::this_thread::sleep_for(std::chrono::milliseconds(300));
+	if (packetProcessor)
+	{
+		packetProcessor->Stop();
+		packetProcessor.reset();
+	}
+
+	running = false;
 
 	for (std::thread& worker : workers)
 	{
@@ -92,16 +105,14 @@ void Server::End()
 	}
 	workers.clear();
 
-	if (packetProcessor)
+	if (sessionManager)
 	{
-		packetProcessor->Stop();
-		packetProcessor.reset();
+		PLOGE << "세션 매니저 종료 전 active 세션 수 : " << sessionManager->GetActiveSessionCnt();
 	}
 
 	sessionManager.reset();
 	listener.reset();
 	iocpCore.reset();
-
 
 	WSACleanup();
 }
