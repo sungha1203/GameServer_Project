@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Main">
+      <UniqueIdentifier>{EB8F5857-02C2-45B7-92C3-90992B50340C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{98F75D1D-30F4-4469-BB78-D72879284915}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{2BA5F19A-6382-4E26-8802-B35C05983895}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ChatClientMain.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="ChatClient.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="ChatClientSession.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="ChatClientSessionFactory.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="ChatConnector.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ChatClient.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="ChatClientSession.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="ChatClientSessionFactory.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="ChatConnector.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ChatClientConfig.ini">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>

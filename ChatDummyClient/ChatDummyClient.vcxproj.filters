@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Main">
+      <UniqueIdentifier>{9D87519B-B546-45DA-982E-FD84C045AE45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{2661676E-1122-49E2-BAF4-B4647EF54682}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{81D238A8-160F-40C6-9327-D9A0E6C9C60D}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ChatDummyClientMain.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="ChatDummyClient.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="DummyConfigLoader.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="DummyConnector.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="DummyMetrics.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="DummySession.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="DummySessionFactory.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ChatDummyClient.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="DummyConfig.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="DummyConfigLoader.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="DummyConnector.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="DummyMetrics.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="DummySession.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="DummySessionFactory.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ChatDummyConfig.ini">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>

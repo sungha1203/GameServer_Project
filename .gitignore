@@ -1,4 +1,10 @@
 .vs/
 x64/
+**/bin/
+**/obj/
+**/x64/
 *.user
+*.log
+*Log.txt
+DummyResult.csv
 *.sln.docstates

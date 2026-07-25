@@ -14,8 +14,8 @@ public:
 	virtual ~ClientSession();
 
 public:
-	void OnConnected();
-	void OnDisconnected();
+	virtual void OnConnected() override;
+	virtual void OnDisconnected() override;
 
 	bool SendChat(const std::string& msg);
 	virtual void Reset() override;

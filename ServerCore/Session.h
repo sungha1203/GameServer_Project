@@ -36,6 +36,9 @@ public:
 	void							RegisterSend();
 	void							ProcessSend(SendEvent* sendEvent, int numOfBytes);
 
+	virtual void					OnConnected() {}
+	virtual void					OnDisconnected() {}
+
 	void							TryRelease();
 	void							Disconnect();
 	virtual void					Reset();

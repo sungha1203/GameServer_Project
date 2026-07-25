@@ -59,6 +59,7 @@ void Client::ConnectThread(int threadidx, int sessionCntPerThread)
 		}
 
 		sessionManager->ActivateSession(session);
+		session->OnConnected();
 		localSessions.push_back(session);
 	}
 
@@ -178,6 +179,7 @@ bool Client::ReconnectSession(std::shared_ptr<ClientSession> session)
 	
 	// 재연결 성공 시 세션 매니저에 다시 활성화
 	sessionManager->ActivateSession(session);
+	session->OnConnected();
 
 	return true;
 }
@@ -230,6 +232,7 @@ bool Client::ReconnectOne()
 	}
 
 	sessionManager->ActivateSession(newSession);
+	newSession->OnConnected();
 	clientSessions.push_back(newSession);
 	return true;
 }

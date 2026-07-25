@@ -1,0 +1,24 @@
+#pragma once
+
+#include "Session.h"
+
+enum : uint16
+{
+	C_LOGIN_REQ = 1001,
+	S_LOGIN_RES = 1002,
+
+	C_ROOM_LIST_REQ = 1051,
+	S_ROOM_LIST_RES = 1052,
+
+	C_ROOM_ENTER_REQ = 1101,
+	S_ROOM_ENTER_RES = 1102,
+	S_ROOM_USER_JOIN = 1103,
+	S_ROOM_USER_LEAVE = 1104,
+	C_ROOM_LEAVE_REQ = 1105,
+	S_ROOM_LEAVE_RES = 1106,
+
+	C_CHAT_REQ = 1201,
+	S_CHAT = 1202,
+
+	S_ERROR = 9001,
+};

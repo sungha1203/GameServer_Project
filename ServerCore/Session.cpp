@@ -176,6 +176,8 @@ void Session::Disconnect()
 
 	if (connected) 
 	{
+		OnDisconnected();
+
 		if (socket != INVALID_SOCKET)
 		{
 			shutdown(socket, SD_BOTH);
